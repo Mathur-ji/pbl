@@ -1,21 +1,22 @@
 #include<stdio.h>
 #include"hospital.h"
+#include"auth.h"
 
-   void add_doc(){
-    doctor d;
-    int n;
-    printf("Enter no of doctors : ");
-    scanf("%d", &n);
-    fflush(stdin);
-    FILE *f1 = fopen("doctor.txt", "a+");
-    for (int i = 0; i < n; i++) {
-        printf("ENTER ID NO : ");
-        scanf("%d", &d.id);
-        getchar();
-        printf("ENTER DOCTOR'S NAME(in caps) : ");
-        fgets(d.name, 40, stdin);
-        d.name[strcspn(d.name, "\n")] = '\0';
-        fprintf(f1, "D-%d %s\n", d.id, d.name);
+void add_doc(){
+   doctor d;
+   int n;
+   printf("Enter no of doctors : ");
+   scanf("%d", &n);
+   fflush(stdin);
+   FILE *f1 = fopen("doctor.txt", "a+");
+   for (int i = 0; i < n; i++) {
+      printf("ENTER ID NO : ");
+      scanf("%d", &d.id);
+      getchar();
+      printf("ENTER DOCTOR'S NAME(in caps) : ");
+      fgets(d.name, 40, stdin);
+      d.name[strcspn(d.name, "\n")] = '\0';
+      fprintf(f1, "D-%d %s\n", d.id, d.name);
     }
     fclose(f1);
    }
@@ -37,7 +38,7 @@ void bookapp(){
    FILE *f3;
    f3=fopen("appointment.txt","a+");
    printf("ENTER REFERENCE/APPOINTMENT ID : ");
-   scanf("%d",&a1.ref_no);
+   scanf("%d",&a1.ref_no); 
    fprintf(f3,"\nA-%d",a1.ref_no);
    printf("ENTER PATIENT ID : ");
    scanf("%d",&a1.patient_id);
@@ -70,38 +71,67 @@ void viewapp() {
     fclose(f3);
 }
 
-
 void main(){
-     int z=captcha(),t,n;
-     if(z==1){
-     do{
-      printf("1.ADD DOCTOR.\n2.ADD PATIENT.\n3.BOOK APPOINTMENT.\n4.CANCEL APPOINTMENT.\n5.VIEW APPOINTMENT.\n6.EXIT.\n");
-      printf("ENTER SERVICE NO : ");
-      scanf("%d",&n);
-      fflush(stdin);
-      switch(n){
-         case 1: add_doc();
-         break;
-         case 2: add_pat();
-         break;
-         case 3: bookapp();
-         break;
-         /*case 4: canapp();
-         break;*/
-         case 5 : viewapp();
-         break;
-         case 6 : exit(0);
-         break;
-         default : printf("Inavlid\n");
-         break;
-      }
-      printf("\nPRESS 1 -> TO CONTINUE OR 0 TO EXIT.");
-      scanf("%d",&t);
-      fflush(stdin);
-   }while(t==1);
-   }
-   else{
-      printf("\n   THANK YOU FOR CHOOSING US    ");
-   exit(0);
-   }
+    system("cls");
+    printf("\t                 ===============================\n");
+    printf("\t                             +++++\n");
+    printf("\t                             +++++\n");
+    printf("\t                    +++++++++++++++++++++++++\n");
+    printf("\t                    +        WELCOME        +\n");
+    printf("\t                    +    CITY HOSPITAL ERP  +\n");
+    printf("\t                    +++++++++++++++++++++++++\n");
+    printf("\t                             +++++\n");
+    printf("\t                             +++++\n");
+    printf("\t                ===============================\n");
+    printf("\v\tPRESS ANY KEY TO START\n");
+    getchar();
+    system("cls");
+    int choice, z, flag = 0;
+
+    printf("\n--- HOSPITAL MANAGEMENT SYSTEM ---\n");
+    printf("1. Sign In\n2. Sign Up\nEnter choice: ");
+    scanf("%d", &choice);
+    while(getchar() != '\n');
+
+    if (choice == 1) {
+        if (login()) {
+            flag = 1;
+        }
+    } else if (choice == 2) {
+        signup();
+        printf("\nAccount created! Please login to continue.\n");
+        if (login()) flag = 1;
+    }
+
+    // Only move to Captcha and Menu if logged in
+    if (flag) {
+    int z;
+        z = captcha(); // Ensure this returns 1 on success!
+        if (z == 1) {
+            int n, t;
+            do {
+                printf("1.ADD DOCTOR.\n2.ADD PATIENT.\n3.BOOK APPOINTMENT.\n4.VIEW APPOINTMENT.\n5.EXIT.\n");
+                printf("ENTER SERVICE NO: ");
+                scanf("%d", &n);
+              fflush(stdin);
+                
+                switch(n) {
+                    case 1: add_doc(); break;
+                    case 2: add_pat(); break;
+                    case 3: bookapp(); break;
+                    case 4: viewapp(); break;
+                    case 5: exit(0);
+                    default: printf("Invalid choice.\n");
+                }
+                printf("\nPress 1 to continue or 0 to exit: ");
+                scanf("%d", &t);
+                fflush(stdin);
+            } while(t==1);
+            printf("\n ........THANK YOU FOR CHOOSING US........");
+        } else {
+            printf("\nCaptcha Failed! Access Denied.\n");
+        }
+    } else {
+        printf("\nLogin Required. Thank you!\n");
+    }
 }
